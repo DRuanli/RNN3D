@@ -31,6 +31,10 @@ RNN3D is a cutting-edge computational biology project designed to revolutionize 
 - Stochastic coordinate generation
 - Comprehensive validation and visualization tools
 
+## 🔬 Performance
+
+<img src="./static/img/performance_report.png" alt="Image 2" width="300"/>
+
 ## 🚀 Installation and Setup
 
 ### Prerequisites
@@ -166,10 +170,6 @@ python main.py
 ```
 
 The web interface will be available at `http://localhost:5001`
-
-## 📜 License
-
-[Insert your project's specific license here]
 
 ## 🗺️ Future Roadmap
 
