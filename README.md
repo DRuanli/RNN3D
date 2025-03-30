@@ -1,6 +1,6 @@
 # RNN3D: Advanced RNA 3D Structure Prediction Project 🧬🔬
 
-![RNN3D Logo](./static/img)
+![RNN3D Logo](./static/img/kaggle.png)
 
 > *Unraveling RNA's Structural Mysteries with Machine Learning*
 
