@@ -1,6 +1,6 @@
 # src/RNN3D/pipeline/stage_03_model.py
 from src.RNN3D.config.configuration import ConfigurationManager
-from src.RNN3D.components.ribonanza_model import RibonanzaNetPredictor
+from src.RNN3D.components.vienna_model import ViennaRNAPredictor
 import logging
 import os
 
@@ -22,8 +22,8 @@ def main():
         config = ConfigurationManager()
         model_config = config.get_model_config()
 
-        # Initialize RibonanzaNet model
-        model = RibonanzaNetPredictor(config=model_config)
+        # Initialize ViennaRNA predictor
+        model = ViennaRNAPredictor(config=model_config)
 
         # Process test sequences
         test_file_path = os.path.join(config.config.data_ingestion.unzip_dir, 'stanford-rna-3d-folding',
