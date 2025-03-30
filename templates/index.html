@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RNN3D: RNA 3D Structure Prediction</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/build/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/examples/js/controls/OrbitControls.js"></script>
+</head>
+<body>
+    <header>
+        <h1>RNN3D: RNA 3D Structure Prediction</h1>
+        <p>Advanced RNA 3D Structure Prediction Using Machine Learning</p>
+    </header>
+
+    <main>
+        <section class="dashboard">
+            <div class="metrics-panel">
+                <h2>Performance Metrics</h2>
+                <div id="metrics-container">
+                    <p>Loading metrics...</p>
+                </div>
+            </div>
+
+            <div class="visualization-panel">
+                <h2>RNA Structure Visualization</h2>
+
+                <div class="controls">
+                    <label for="rna-selector">Select RNA:</label>
+                    <select id="rna-selector">
+                        <option value="">Select RNA sequence</option>
+                    </select>
+
+                    <label for="conformation-selector">Conformation:</label>
+                    <select id="conformation-selector">
+                        <option value="">Select conformation</option>
+                    </select>
+                </div>
+
+                <div id="visualization-container">
+                    <div id="3d-container"></div>
+                    <div id="sequence-display"></div>
+                </div>
+            </div>
+        </section>
+
+        <section class="prediction-form">
+            <h2>Predict New RNA Structure</h2>
+
+            <form id="prediction-form">
+                <div class="form-group">
+                    <label for="rna-sequence">RNA Sequence (A, C, G, U only):</label>
+                    <textarea id="rna-sequence" placeholder="Enter RNA sequence (max 480 nucleotides)" maxlength="480" required></textarea>
+                </div>
+
+                <button type="submit" id="predict-button">Predict Structure</button>
+            </form>
+
+            <div id="prediction-results" style="display: none;">
+                <h3>Prediction Results</h3>
+                <div class="results-container">
+                    <div class="secondary-structure">
+                        <h4>Secondary Structure</h4>
+                        <pre id="secondary-structure-display"></pre>
+                    </div>
+
+                    <div class="tertiary-structure">
+                        <h4>3D Structure</h4>
+                        <div id="prediction-3d-container"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 RNN3D Project | Advanced RNA 3D Structure Prediction</p>
+    </footer>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>

@@ -1,8 +1,14 @@
 # src/RNN3D/config/configuration.py
 from src.RNN3D.constants import *
 from src.RNN3D.utils.common import read_yaml, create_directories
-from src.RNN3D.entity.config_entity import DataIngestionConfig, DataPreparationConfig, ModelConfig, \
-    SubmissionValidationConfig
+from src.RNN3D.entity.config_entity import (
+    DataIngestionConfig,
+    DataPreparationConfig,
+    ModelConfig,
+    SubmissionValidationConfig,
+    VisualizationConfig,
+    WebInterfaceConfig
+)
 import logging
 
 
@@ -82,3 +88,63 @@ class ConfigurationManager:
         )
 
         return submission_validation_config
+
+    def get_visualization_config(self) -> VisualizationConfig:
+        config = self.config.visualization if hasattr(self.config, 'visualization') else self.config.model
+        params = self.params
+
+        # Create the directories if they don't exist
+        vis_dir = Path(config.root_dir) / "visualizations"
+        create_directories([vis_dir])
+
+        visualization_config = VisualizationConfig(
+            root_dir=Path(config.root_dir),
+            submission_path=Path(self.config.model.output_dir) / "submission.csv",
+            visualizations_dir=vis_dir,
+            num_conformations=params.num_conformations
+        )
+
+        return visualization_config
+
+    def get_web_interface_config(self) -> WebInterfaceConfig:
+        web_config = self.config.web_interface if hasattr(self.config, 'web_interface') else None
+        params = self.params
+
+        # Create the directories if they don't exist
+        templates_dir = Path("templates")
+        static_dir = Path("static")
+        create_directories([templates_dir, static_dir])
+
+        # Get validation metrics path
+        validation_dir = Path(self.config.model.output_dir) / "validation"
+        metrics_path = validation_dir / "metrics.txt"
+
+        # Get visualizations directory
+        vis_dir = self.get_visualization_config().visualizations_dir
+
+        # Determine web interface root directory
+        if hasattr(self.config, 'artifacts_root'):
+            web_root = Path(self.config.artifacts_root) / "web_interface"
+        else:
+            web_root = Path("artifacts/web_interface")
+
+        # Get host and port from config if available
+        host = web_config.host if web_config and hasattr(web_config, 'host') else "0.0.0.0"
+        port = web_config.port if web_config and hasattr(web_config, 'port') else 5000
+        debug_mode = web_config.debug_mode if web_config and hasattr(web_config, 'debug_mode') else False
+        run_server = web_config.run_server if web_config and hasattr(web_config, 'run_server') else True
+
+        web_interface_config = WebInterfaceConfig(
+            root_dir=web_root,
+            templates_dir=templates_dir,
+            static_dir=static_dir,
+            visualizations_dir=vis_dir,
+            metrics_path=metrics_path,
+            host=host,
+            port=port,
+            debug_mode=debug_mode,
+            run_server=run_server,
+            max_sequence_length=params.max_sequence_length
+        )
+
+        return web_interface_config

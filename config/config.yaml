@@ -24,3 +24,16 @@ submission_validation:
   root_dir: artifacts/model/validation
   metrics_path: artifacts/model/validation/metrics.txt
   report_path: artifacts/model/validation/performance_report.png
+
+visualization:
+  root_dir: artifacts/visualization
+  visualizations_dir: artifacts/visualization/output
+
+web_interface:
+  root_dir: artifacts/web_interface
+  templates_dir: templates
+  static_dir: static
+  host: "0.0.0.0"
+  port: 5001
+  debug_mode: false
+  run_server: true
