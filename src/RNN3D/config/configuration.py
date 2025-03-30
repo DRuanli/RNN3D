@@ -1,7 +1,7 @@
 # src/RNN3D/config/configuration.py
 from src.RNN3D.constants import *
 from src.RNN3D.utils.common import read_yaml, create_directories
-from src.RNN3D.entity.config_entity import DataIngestionConfig, DataPreparationConfig
+from src.RNN3D.entity.config_entity import DataIngestionConfig, DataPreparationConfig, ModelConfig
 import logging
 
 class ConfigurationManager:
@@ -46,3 +46,20 @@ class ConfigurationManager:
         )
 
         return data_preparation_config
+
+    def get_model_config(self) -> ModelConfig:
+        config = self.config.model
+        params = self.params
+
+        create_directories([config.root_dir, config.model_dir, config.output_dir])
+
+        model_config = ModelConfig(
+            root_dir=Path(config.root_dir),
+            model_dir=Path(config.model_dir),
+            pretrained_structures_path=Path(config.pretrained_structures_path),
+            output_dir=Path(config.output_dir),
+            num_conformations=params.num_conformations,
+            max_sequence_length=params.max_sequence_length
+        )
+
+        return model_config

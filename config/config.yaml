@@ -2,7 +2,7 @@ artifacts_root: artifacts
 
 data_ingestion:
   root_dir: artifacts/data_ingestion
-  source_URL: https://drive.google.com/file/d/1WgK8rv4dshzk_1bjM8m_omgIg5vwcExU/view?usp=share_link
+  source_URL: https://drive.google.com/file/d/1gA0dJ7JwT-_25jTOKLah3tHLq5yZBSJ8/view?usp=share_link
   local_data_file: artifacts/data_ingestion/rnn_data.zip
   unzip_dir: artifacts/data_ingestion/rnn_data
 
@@ -12,4 +12,10 @@ data_preparation:
   processed_data_dir: artifacts/data_preparation/processed
   train_data_path: artifacts/data_preparation/processed/train_data.pt
   validation_data_path: artifacts/data_preparation/processed/validation_data.pt
-  msa_dir: artifacts/data_ingestion/rnn_data/MSA
+  msa_dir: artifacts/data_ingestion/rnn_data/stanford-rna-3d-folding/MSA
+
+model:
+  root_dir: artifacts/model
+  model_dir: artifacts/model/saved
+  pretrained_structures_path: artifacts/model/pretrained/af3-casp16_out.pkl
+  output_dir: artifacts/model/output

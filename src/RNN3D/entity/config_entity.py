@@ -1,6 +1,7 @@
 # src/RNN3D/entity/config_entity.py
 from dataclasses import dataclass
 from pathlib import Path
+from typing import List, Dict, Any, Optional
 
 @dataclass(frozen=True)
 class DataIngestionConfig:
@@ -19,3 +20,12 @@ class DataPreparationConfig:
     train_data_path: Path
     validation_data_path: Path
     msa_dir: Path
+
+@dataclass(frozen=True)
+class ModelConfig:
+    root_dir: Path
+    model_dir: Path
+    pretrained_structures_path: Path
+    output_dir: Path
+    num_conformations: int
+    max_sequence_length: int
