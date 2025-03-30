@@ -1,75 +1,37 @@
-# RNN3D: Advanced RNA 3D Structure Prediction Project
+# RNN3D: Advanced RNA 3D Structure Prediction Project 🧬🔬
 
-## 🧬 Project Introduction
+![RNN3D Logo](./static/img)
 
-RNN3D is a cutting-edge computational biology project designed to unravel the complex three-dimensional structures of RNA molecules. Unlike traditional methods, this project leverages advanced machine learning techniques to predict RNA conformations with unprecedented accuracy and detail.
+> *Unraveling RNA's Structural Mysteries with Machine Learning*
 
-### Why RNA 3D Structure Matters
+**Note**: Project screenshots and detailed visual documentation will be added in future updates.
 
-RNA molecules are far more than simple linear sequences. Their three-dimensional structure is crucial to understanding:
-- Biological function
-- Molecular interactions
-- Potential therapeutic targets
-- Gene regulation mechanisms
+## 🌟 Project Overview
 
-Traditional methods of RNA structure prediction are:
-- Time-consuming
-- Expensive
-- Limited in scope
+RNN3D is a cutting-edge computational biology project designed to revolutionize RNA structure prediction through advanced machine learning techniques. By leveraging sophisticated neural network architectures and bioinformatics tools, this project aims to generate accurate three-dimensional representations of RNA molecules.
 
-Our RNN3D approach aims to revolutionize this process by:
-- Generating multiple potential conformations
-- Utilizing machine learning algorithms
-- Integrating bioinformatics tools like ViennaRNA
+## 🔬 Key Features
 
-## 🔬 Technical Architecture
+### Advanced Prediction Capabilities
+- Generate up to 5 different 3D conformations per RNA sequence
+- Utilize machine learning algorithms for structure prediction
+- Integrate ViennaRNA for secondary structure analysis
+- Handle complex RNA sequences with intelligent preprocessing
 
-### Project Components
-
-1. **Data Ingestion Module**
-   - Automated data download from specified sources
-   - Handles complex dataset extraction
-   - Validates incoming RNA sequence data
-   - Supports various file formats and sources
-
-2. **Data Preparation Module**
-   - Sequence encoding techniques
-     - One-hot encoding for nucleotides
-     - Multiple Sequence Alignment (MSA) processing
-   - Handles variable-length RNA sequences
-   - Prepares data for machine learning models
-
-3. **Prediction Model**
-   - Uses advanced RNN (Recurrent Neural Network) architectures
-   - Generates up to 5 different 3D conformations per sequence
-   - Integrates ViennaRNA for secondary structure prediction
-   - Fallback mechanisms for tool unavailability
-
-### Key Technical Specifications
-
-#### Configuration Parameters
-```yaml
-# Model Hyperparameters (params.yaml)
-batch_size: 32            # Batch processing size
-max_length: 480           # Maximum sequence length
-num_conformations: 5      # Multiple structure generations
-
-# Neural Network Configuration
-hidden_size: 256          # Internal network complexity
-num_layers: 6             # Network depth
-dropout: 0.1              # Regularization technique
-learning_rate: 0.001      # Optimization parameter
-weight_decay: 0.0001      # Prevent overfitting
-```
+### Technical Highlights
+- Recurrent Neural Network (RNN) based architecture
+- Multiple sequence alignment (MSA) processing
+- Stochastic coordinate generation
+- Comprehensive validation and visualization tools
 
 ## 🚀 Installation and Setup
 
-### System Requirements
+### Prerequisites
 - Python 3.8+
 - Computational resources (recommended GPU)
 - Optional: ViennaRNA installed
 
-### Detailed Installation Steps
+### Installation Steps
 
 1. **Clone the Repository**
    ```bash
@@ -100,82 +62,121 @@ weight_decay: 0.0001      # Prevent overfitting
    python main.py
    ```
 
-## 🧠 Machine Learning Pipeline
+## 📊 Machine Learning Pipeline
 
-### Data Flow
+### Stages of Processing
 1. **Data Ingestion**
-   - Download RNA datasets
-   - Extract compressed files
-   - Validate data integrity
+   - Automated dataset download
+   - Extraction and validation
+   - Supports various file formats
 
 2. **Data Preparation**
-   - Encode RNA sequences
-   - Generate training/validation splits
-   - Prepare multi-dimensional input tensors
+   - Sequence encoding (one-hot and MSA)
+   - Training/validation splits
+   - Preprocessing for neural network input
 
 3. **Model Prediction**
-   - Generate 3D structure predictions
+   - Generate multiple RNA conformations
    - Create submission-ready CSV files
-   - Handle edge cases and long sequences
+   - Handle complex sequence scenarios
 
-### Unique Prediction Approach
-- Generates multiple conformations (up to 5)
-- Uses secondary structure as an intermediate representation
-- Applies stochastic coordinate generation
-- Implements fallback mechanisms
+## 🖥️ Web Interface Features
 
-## 🔍 Logging and Monitoring
+### Interactive Visualization
+- 3D RNA structure rendering
+- Multiple conformation exploration
+- Real-time structure prediction
+- Performance metrics dashboard
 
-Comprehensive logging across multiple stages:
-- Detailed log files in `logs/` directory
-- Tracks each stage of the pipeline
-- Captures errors and performance metrics
+### Prediction Capabilities
+- Input RNA sequences (A, C, G, U)
+- Generate secondary and tertiary structures
+- Support for sequences up to 480 nucleotides
 
-## 🤝 Contributing Guidelines
+## 📈 Performance Metrics
 
-### Setup for Contributors
-1. Fork the repository
-2. Create a feature branch
-   ```bash
-   git checkout -b feature/your-amazing-feature
-   ```
-3. Commit changes with descriptive messages
-4. Push and create a pull request
-
-### Contribution Areas
-- Improve data preprocessing
-- Enhance machine learning models
-- Add new prediction techniques
-- Optimize performance
-- Expand documentation
-
-## 📊 Performance Metrics
-
-### Evaluation Criteria
+The project tracks various performance indicators:
 - Number of valid conformations
 - Structural diversity
 - Computational efficiency
 - Prediction accuracy compared to experimental data
 
-## 🔬 Research and Applications
+## 🧪 Research Applications
 
-Potential Applications:
+Potential Use Cases:
 - Drug design targeting RNA
 - Understanding genetic disorders
 - Computational biology research
-- Predicting RNA-protein interactions
+- RNA-protein interaction prediction
 
-## 📚 References and Acknowledgments
+## 🔧 Configuration
+
+Key configuration parameters are managed through YAML files:
+
+### Model Hyperparameters (`params.yaml`)
+```yaml
+batch_size: 32            # Batch processing size
+max_length: 480           # Maximum sequence length
+num_conformations: 5      # Multiple structure generations
+
+# Neural Network Configuration
+hidden_size: 256          # Internal network complexity
+num_layers: 6             # Network depth
+dropout: 0.1              # Regularization technique
+learning_rate: 0.001      # Optimization parameter
+weight_decay: 0.0001      # Prevent overfitting
+```
+
+## 🤝 Contributing
+
+### How to Contribute
+1. Fork the repository
+2. Create a feature branch
+3. Commit changes with descriptive messages
+4. Push and create a pull request
+
+### Contribution Focus Areas
+- Data preprocessing improvements
+- Machine learning model enhancements
+- Performance optimization
+- Documentation expansion
+
+## 📚 Dependencies
+
+- TensorFlow 2.16.1
+- Pandas
+- NumPy
+- Flask
+- Matplotlib
+- Seaborn
+- ViennaRNA (Optional)
+
+## 🌐 Web Interface
+
+Access the interactive RNA structure prediction platform by running:
+```bash
+python main.py
+```
+
+The web interface will be available at `http://localhost:5001`
+
+## 📜 License
+
+[Insert your project's specific license here]
+
+## 🗺️ Future Roadmap
+
+- Integrate more advanced ML architectures
+- Expand dataset diversity
+- Improve prediction accuracy
+- Develop enhanced visualization techniques
+
+## 🙏 Acknowledgments
+
 - Stanford RNA 3D Folding Dataset
 - ViennaRNA Project
 - Machine Learning in Computational Biology community
 
-## 📜 License
-[Insert your project's specific license here]
+---
 
-## 🌟 Future Roadmap
-- Integrate more advanced machine learning architectures
-- Expand dataset diversity
-- Improve prediction accuracy
-- Develop web interface for predictions
-```
+**Note**: This project is a testament to the incredible potential of machine learning in unraveling the complex world of RNA structural biology. 🧬🤖
