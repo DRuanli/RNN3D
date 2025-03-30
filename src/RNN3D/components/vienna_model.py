@@ -102,42 +102,114 @@ class ViennaRNAPredictor:
 
     def secondary_to_3d_coordinates(self, sequence, secondary_structure, num_conformations=5):
         """
-        Convert secondary structure to 3D coordinates
+        Convert secondary structure to more realistic 3D coordinates
         """
-        # Simple placeholder implementation - in a real scenario, you'd use a proper 3D structure generator
+        import numpy as np
+
+        # Constants for RNA geometry
+        P_C4_DIST = 6.0  # Approx distance between phosphate and C4' in RNA
+        HELIX_RISE = 2.8  # Rise per base pair in A-form RNA helix
+        HELIX_TURN = 32.7  # Degrees of turn per base pair in A-form RNA
+        BACKBONE_DIST = 4.0  # Approx distance between consecutive phosphates
+
         seq_length = len(sequence)
         coords = []
 
         for i in range(num_conformations):
-            # Create random but consistent 3D coordinates based on sequence and secondary structure
-            np.random.seed(i + hash(sequence) % 10000)  # For reproducibility
+            # Use a different seed for each conformation but consistent for reproducibility
+            np.random.seed(i + hash(sequence) % 10000)
 
-            # Create a backbone trace with structure-based positioning
+            # Initialize coordinates array
             coord = np.zeros((seq_length, 3), dtype=np.float32)
 
             # Stack of paired positions for helix formation
             paired_positions = []
+            paired_bases = set()
+
+            # First pass: identify all paired bases
             for j, char in enumerate(secondary_structure):
-                if char == "(":
+                if char == '(':
                     paired_positions.append(j)
-                elif char == ")":
+                elif char == ')':
                     if paired_positions:
-                        # Create a helical structure for paired bases
                         pair_idx = paired_positions.pop()
-                        helix_angle = (j - pair_idx) * 0.3
-                        coord[j] = np.array([np.cos(helix_angle), np.sin(helix_angle), j * 0.2]) * 10
-                        coord[pair_idx] = np.array(
-                            [np.cos(helix_angle + np.pi), np.sin(helix_angle + np.pi), pair_idx * 0.2]) * 10
-                else:  # Unpaired base, loop region
-                    coord[j] = np.array([np.cos(j * 0.2) * j * 0.5, np.sin(j * 0.2) * j * 0.5, j * 0.3]) * 5
+                        paired_bases.add(j)
+                        paired_bases.add(pair_idx)
 
-            # Fix any remaining unassigned coordinates
+            # Second pass: lay out the RNA backbone
+            current_pos = np.array([0.0, 0.0, 0.0])
+            current_vec = np.array([1.0, 0.0, 0.0])  # Initial direction
+
+            # Stack structure for helix formation
+            helix_stack = []
+            in_helix = False
+            helix_dir = None
+
+            for j, char in enumerate(secondary_structure):
+                # Basic position based on backbone trace
+                coord[j] = current_pos.copy()
+
+                if char == '(':
+                    # Start or continue helix
+                    helix_stack.append(j)
+                    if not in_helix:
+                        in_helix = True
+                        # Pick a random direction for helix axis that's perpendicular to current_vec
+                        helix_dir = np.cross(current_vec, np.random.randn(3))
+                        helix_dir = helix_dir / np.linalg.norm(helix_dir)
+
+                    # Move along the helix
+                    angle = np.radians(HELIX_TURN)
+                    rot_matrix = self._rotation_matrix(helix_dir, angle)
+                    current_vec = np.dot(rot_matrix, current_vec)
+                    current_pos += current_vec * BACKBONE_DIST
+
+                elif char == ')':
+                    # End or continue helix
+                    if helix_stack:
+                        helix_stack.pop()
+
+                        # Move along the helix
+                        angle = np.radians(HELIX_TURN)
+                        rot_matrix = self._rotation_matrix(helix_dir, angle)
+                        current_vec = np.dot(rot_matrix, current_vec)
+                        current_pos += current_vec * BACKBONE_DIST
+
+                        if not helix_stack:
+                            in_helix = False
+                else:
+                    # Loop region - move in a random direction that's somewhat smooth
+                    if j > 0:
+                        # Generate a random perturbation to the current direction
+                        perturb = np.random.randn(3) * 0.3
+                        current_vec = current_vec + perturb
+                        current_vec = current_vec / np.linalg.norm(current_vec)
+                        current_pos += current_vec * BACKBONE_DIST
+
+            # Third pass: adjust paired bases to be across from each other in helices
             for j in range(seq_length):
-                if np.all(coord[j] == 0):
-                    coord[j] = np.array([np.random.normal(0, 5), np.random.normal(0, 5), j * 0.3])
+                if j in paired_bases:
+                    # Find the paired base
+                    paired_j = None
+                    for k in range(seq_length):
+                        if k != j and k in paired_bases:
+                            if (secondary_structure[j] == '(' and secondary_structure[k] == ')') or \
+                                    (secondary_structure[j] == ')' and secondary_structure[k] == '('):
+                                paired_j = k
+                                break
 
-                    # Add some random noise for different conformations
-                coord[j] += np.random.normal(0, 2, 3)
+                    if paired_j is not None:
+                        # Adjust the positions to be across from each other
+                        center = (coord[j] + coord[paired_j]) / 2
+                        direction = coord[j] - coord[paired_j]
+                        direction = direction / np.linalg.norm(direction) * P_C4_DIST
+
+                        coord[j] = center + direction / 2
+                        coord[paired_j] = center - direction / 2
+
+            # Add random noise for each conformation
+            for j in range(seq_length):
+                coord[j] += np.random.normal(0, 1, 3)
 
             coords.append(coord)
 
@@ -181,6 +253,9 @@ class ViennaRNAPredictor:
 
         return solution
 
+    
+    
+    
     def solution_to_submission(self, solution):
         """
         Convert solution to submission format
@@ -188,26 +263,65 @@ class ViennaRNAPredictor:
         submit_dfs = []
 
         for target_id, data in solution.items():
-            df = pd.DataFrame()
             sequence = data['sequence']
             coords = data['coord']
 
+            # Ensure we have exactly 5 conformations
+            while len(coords) < 5:
+                # If we have fewer than 5, duplicate the last one with small variations
+                if coords:
+                    new_coords = coords[-1].copy()
+                    # Add small random variations
+                    new_coords += np.random.normal(0, 1, new_coords.shape)
+                    coords.append(new_coords)
+                else:
+                    # Create random coordinates if none exist
+                    new_coords = np.random.normal(0, 10, (len(sequence), 3))
+                    coords.append(new_coords)
+
+            # Limit to 5 conformations if we have more
+            coords = coords[:5]
+
             # Create submission dataframe
+            df = pd.DataFrame()
             df['ID'] = [f'{target_id}_{i + 1}' for i in range(len(sequence))]
             df['resname'] = list(sequence)
             df['resid'] = [i + 1 for i in range(len(sequence))]
 
             # Add coordinates for each conformation
-            for j in range(len(coords)):
-                df[f'x_{j + 1}'] = coords[j][:, 0]
-                df[f'y_{j + 1}'] = coords[j][:, 1]
-                df[f'z_{j + 1}'] = coords[j][:, 2]
+            for j in range(5):  # Always use exactly 5 conformations
+                if j < len(coords):
+                    conf_coords = coords[j]
+                    # Ensure the shape matches
+                    if len(conf_coords) < len(sequence):
+                        # Pad with zeros if needed
+                        padding = np.zeros((len(sequence) - len(conf_coords), 3))
+                        conf_coords = np.vstack([conf_coords, padding])
+                    elif len(conf_coords) > len(sequence):
+                        # Truncate if needed
+                        conf_coords = conf_coords[:len(sequence)]
+
+                    df[f'x_{j + 1}'] = conf_coords[:, 0]
+                    df[f'y_{j + 1}'] = conf_coords[:, 1]
+                    df[f'z_{j + 1}'] = conf_coords[:, 2]
+                else:
+                    # Fill with zeros if missing
+                    df[f'x_{j + 1}'] = [0.0] * len(sequence)
+                    df[f'y_{j + 1}'] = [0.0] * len(sequence)
+                    df[f'z_{j + 1}'] = [0.0] * len(sequence)
 
             submit_dfs.append(df)
 
-        return pd.concat(submit_dfs) if submit_dfs else pd.DataFrame()
+        # Combine all dataframes
+        result = pd.concat(submit_dfs) if submit_dfs else pd.DataFrame()
 
-    def process_test_sequences(self, test_file_path):
+        # Ensure no NaN values
+        if result.isna().any().any():
+            # Fill NaN values with 0
+            result = result.fillna(0.0)
+
+        return result
+def process_test_sequences(self, test_file_path):
         """
         Process test sequences and generate predictions
         """
@@ -258,3 +372,19 @@ class ViennaRNAPredictor:
         logging.info(f"Saved submission to {submission_path}")
 
         return submission_path
+
+    def _rotation_matrix(self, axis, angle):
+        """
+        Return the rotation matrix for rotation around axis by angle (radians)
+        """
+        import numpy as np
+
+        axis = axis / np.linalg.norm(axis)
+        a = np.cos(angle / 2)
+        b, c, d = -axis * np.sin(angle / 2)
+
+        return np.array([
+            [a * a + b * b - c * c - d * d, 2 * (b * c - a * d), 2 * (b * d + a * c)],
+            [2 * (b * c + a * d), a * a + c * c - b * b - d * d, 2 * (c * d - a * b)],
+            [2 * (b * d - a * c), 2 * (c * d + a * b), a * a + d * d - b * b - c * c]
+        ])
