@@ -321,7 +321,7 @@ class ViennaRNAPredictor:
             result = result.fillna(0.0)
 
         return result
-def process_test_sequences(self, test_file_path):
+    def process_test_sequences(self, test_file_path):
         """
         Process test sequences and generate predictions
         """

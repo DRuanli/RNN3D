@@ -19,3 +19,8 @@ model:
   model_dir: artifacts/model/saved
   pretrained_structures_path: artifacts/model/pretrained/af3-casp16_out.pkl
   output_dir: artifacts/model/output
+
+submission_validation:
+  root_dir: artifacts/model/validation
+  metrics_path: artifacts/model/validation/metrics.txt
+  report_path: artifacts/model/validation/performance_report.png

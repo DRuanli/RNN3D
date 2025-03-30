@@ -29,3 +29,12 @@ class ModelConfig:
     output_dir: Path
     num_conformations: int
     max_sequence_length: int
+
+@dataclass(frozen=True)
+class SubmissionValidationConfig:
+    root_dir: Path
+    submission_path: Path
+    template_path: Optional[Path]
+    metrics_path: Path
+    report_path: Path
+    generate_report: bool

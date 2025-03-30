@@ -1,15 +1,16 @@
 # src/RNN3D/config/configuration.py
 from src.RNN3D.constants import *
 from src.RNN3D.utils.common import read_yaml, create_directories
-from src.RNN3D.entity.config_entity import DataIngestionConfig, DataPreparationConfig, ModelConfig
+from src.RNN3D.entity.config_entity import DataIngestionConfig, DataPreparationConfig, ModelConfig, \
+    SubmissionValidationConfig
 import logging
+
 
 class ConfigurationManager:
     def __init__(
-        self,
-        config_filepath = CONFIG_FILE_PATH,
-        params_filepath = PARAMS_FILE_PATH):
-
+            self,
+            config_filepath=CONFIG_FILE_PATH,
+            params_filepath=PARAMS_FILE_PATH):
         self.config = read_yaml(config_filepath)
         self.params = read_yaml(params_filepath)
         create_directories([self.config.artifacts_root])
@@ -63,3 +64,21 @@ class ConfigurationManager:
         )
 
         return model_config
+
+    def get_submission_validation_config(self) -> SubmissionValidationConfig:
+        config = self.config.model  # Using model config paths since validation works with model outputs
+
+        # Create the directories if they don't exist
+        validation_dir = Path(config.output_dir) / "validation"
+        create_directories([validation_dir])
+
+        submission_validation_config = SubmissionValidationConfig(
+            root_dir=validation_dir,
+            submission_path=Path(config.output_dir) / "submission.csv",
+            template_path=Path("submission.csv") if Path("submission.csv").exists() else None,
+            metrics_path=validation_dir / "metrics.txt",
+            report_path=validation_dir / "performance_report.png",
+            generate_report=True
+        )
+
+        return submission_validation_config
