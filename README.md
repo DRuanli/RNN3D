@@ -46,7 +46,7 @@ RNN3D is a cutting-edge computational biology project designed to revolutionize 
 
 1. **Clone the Repository**
    ```bash
-   git clone https://github.com/yourusername/RNN3D.git
+   git clone https://github.com/DRuanli/RNN3D.git
    cd RNN3D
    ```
 
