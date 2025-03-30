@@ -14,6 +14,7 @@ RNN3D is a cutting-edge computational biology project designed to revolutionize 
   <img src="./static/img/R1116_conf1.png" alt="Image 1" width="300"/>
   <img src="./static/img/R1190_conf5.png" alt="Image 2" width="300"/>
   <img src="./static/img/R1128_conf3.png" alt="Image 2" width="300"/>
+  <img src="./static/img/R1126_conf5.png" alt="Image 2" width="300"/>
 </div>
 
 ## 🔬 Key Features
