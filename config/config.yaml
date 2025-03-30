@@ -5,3 +5,11 @@ data_ingestion:
   source_URL: https://drive.google.com/file/d/1WgK8rv4dshzk_1bjM8m_omgIg5vwcExU/view?usp=share_link
   local_data_file: artifacts/data_ingestion/rnn_data.zip
   unzip_dir: artifacts/data_ingestion/rnn_data
+
+data_preparation:
+  root_dir: artifacts/data_preparation
+  data_dir: artifacts/data_ingestion/rnn_data
+  processed_data_dir: artifacts/data_preparation/processed
+  train_data_path: artifacts/data_preparation/processed/train_data.pt
+  validation_data_path: artifacts/data_preparation/processed/validation_data.pt
+  msa_dir: artifacts/data_ingestion/rnn_data/MSA
